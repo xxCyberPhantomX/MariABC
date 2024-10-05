@@ -1,0 +1,58 @@
+
+package proyect;
+
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+import java.util.List;
+
+public class ProductoDAO {
+
+    private EntityManagerFactory emf = Persistence.createEntityManagerFactory("my-persistence-unit");
+
+    // Método para insertar un producto
+    public void insertarProducto(Producto producto) {
+        EntityManager em = emf.createEntityManager();
+        em.getTransaction().begin(); // Inicia la transacción
+        em.persist(producto); // Inserta el producto
+        em.getTransaction().commit(); // Confirma la transacción
+        em.close(); // Cierra el EntityManager
+    }
+
+    // Método para obtener todos los productos
+    public List<Producto> obtenerProductos() {
+        EntityManager em = emf.createEntityManager();
+        List<Producto> productos = em.createQuery("SELECT p FROM Producto p", Producto.class).getResultList();
+        em.close(); // Cierra el EntityManager
+        return productos; // Devuelve la lista de productos
+    }
+
+    // Método para obtener un producto por ID
+    public Producto obtenerProductoPorId(Long id) {
+        EntityManager em = emf.createEntityManager();
+        Producto producto = em.find(Producto.class, id); // Busca el producto por ID
+        em.close(); // Cierra el EntityManager
+        return producto; // Devuelve el producto encontrado
+    }
+
+    // Método para actualizar un producto
+    public void actualizarProducto(Producto producto) {
+        EntityManager em = emf.createEntityManager();
+        em.getTransaction().begin(); // Inicia la transacción
+        em.merge(producto); // Actualiza el producto
+        em.getTransaction().commit(); // Confirma la transacción
+        em.close(); // Cierra el EntityManager
+    }
+
+    // Método para eliminar un producto
+    public void eliminarProducto(Long id) {
+        EntityManager em = emf.createEntityManager();
+        em.getTransaction().begin(); // Inicia la transacción
+        Producto producto = em.find(Producto.class, id); // Busca el producto por ID
+        if (producto != null) {
+            em.remove(producto); // Elimina el producto
+        }
+        em.getTransaction().commit(); // Confirma la transacción
+        em.close(); // Cierra el EntityManager
+    }
+}
